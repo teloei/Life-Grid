@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命网格 - 直观规划你的时间</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 性能优化 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <div class="container">
+        <!-- 语言选择器 -->
+        <div class="language-selector">
+            <div class="language-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <select id="language-select" onchange="changeLanguage(this.value)">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
+        <!-- 网站标题和介绍 -->
+        <div class="site-header">
+            <h1><i class="fas fa-th icon-title"></i> <span data-i18n="siteTitle">生命网格</span></h1>
+            <div class="description">
+                <p data-i18n="siteDescription">生命网格是一款极简主义的网页应用，帮助你直观地规划你的时间。输入你的年龄和期望寿命，它就能显示时间流逝和剩余时间，鼓励你反思并更有针对性地生活。今天就开始规划你的时间吧！</p>
+            </div>
+        </div>
+
+        <!-- 顶部信息卡片区域 -->
+        <div class="info-cards">
+            <!-- 出生日期卡片 -->
+            <div class="card">
+                <div class="birth-info">
+                    <div class="status" id="birth-status">
+                        <span class="check-icon">✓</span>
+                        <span class="status-text" data-i18n="birthDateSet">Birth Date Set</span>
+                    </div>
+                    <button class="change-btn" id="change-birth-btn" data-i18n="changeBirthDate">Change Birth Date</button>
+                </div>
+            </div>
+            
+            <!-- 当前年份和年龄卡片 -->
+            <div class="card">
+                <div class="year-age-info">
+                    <div class="current-year"><span data-i18n="currentYear">Current Year:</span> <span id="current-year">2025</span></div>
+                    <div class="your-age"><span data-i18n="yourAge">Your Age:</span> <span id="your-age">25</span> <span data-i18n="yearsOld">years old</span></div>
+                </div>
+            </div>
+            
+            <!-- 当前时间槽卡片 -->
+            <div class="card">
+                <div class="time-slot-info">
+                    <div class="slot-title" data-i18n="currentSlot">Current 30-Min Slot</div>
+                    <div class="slot-time" id="current-slot">27:02</div>
+                    <div class="slots-passed"><span id="slots-passed">20</span> <span data-i18n="slotsPassed">slots passed today</span></div>
+                </div>
+            </div>
+            
+            <!-- 当前日期和时间卡片 -->
+            <div class="card">
+                <div class="date-time-info">
+                    <div class="current-date" id="current-date">2025年4月19日</div>
+                    <div class="current-time" id="current-time">上午10:02:57</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 剩余时间区域 -->
+        <div class="remaining-sections">
+            <!-- 本年剩余 -->
+            <div class="remaining-section">
+                <h3 class="section-title"><i class="far fa-calendar-alt icon-section"></i> <span data-i18n="whatsLeftForYear">What's left for 2025</span></h3>
+                <div class="time-units">
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="daysLeft">Days Left</div>
+                        <div class="unit-value" id="days-left">257</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="weeksLeft">Weeks Left</div>
+                        <div class="unit-value" id="weeks-left">36</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="monthsLeft">Months Left</div>
+                        <div class="unit-value" id="months-left">8</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 当日剩余 -->
+            <div class="remaining-section">
+                <h3 class="section-title"><i class="far fa-clock icon-section"></i> <span data-i18n="whatsLeftForToday">What's left for (2025年4月19日)</span></h3>
+                <div class="time-units">
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="hoursLeft">Hours Left</div>
+                        <div class="unit-value" id="hours-left">13</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="minutesLeft">Minutes Left</div>
+                        <div class="unit-value" id="minutes-left">837</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="secondsLeft">Seconds Left</div>
+                        <div class="unit-value" id="seconds-left">50,222</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 黄金时间剩余 -->
+            <div class="remaining-section">
+                <h3 class="section-title"><i class="fas fa-star icon-section"></i> <span data-i18n="remainingPrimeTime">Remaining Prime Time</span></h3>
+                <div class="time-units">
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="yearsLeft">Years Left</div>
+                        <div class="unit-value" id="prime-years-left">20</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="monthsLeft">Months Left</div>
+                        <div class="unit-value" id="prime-months-left">236</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="unit-label" data-i18n="weeksLeft">Weeks Left</div>
+                        <div class="unit-value" id="prime-weeks-left">1,028</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 可视化区域 -->
+        <div class="visualization-area">
+            <div class="vis-row">
+                <div class="weeks-remaining">
+                    <div class="vis-title"><i class="fas fa-calendar-week icon-vis"></i> <span data-i18n="weeksRemainingThisYear">Weeks Remaining This Year</span> <span class="vis-ratio">(36/52)</span></div>
+                    <div class="weeks-grid" id="weeks-grid"></div>
+                </div>
+            </div>
+            
+            <div class="vis-row">
+                <div class="hours-remaining">
+                    <div class="vis-title"><i class="far fa-clock icon-vis"></i> <span data-i18n="hoursRemainingToday">Hours Remaining Today</span> <span class="vis-ratio">(13/24)</span></div>
+                    <div class="hours-grid" id="hours-grid"></div>
+                </div>
+            </div>
+            
+            <div class="vis-row">
+                <div class="prime-years">
+                    <div class="vis-title"><i class="fas fa-star icon-vis"></i> <span data-i18n="primeYearsRemaining">Prime Years Remaining</span> <span class="vis-ratio">(20/45)</span></div>
+                    <div class="prime-years-grid" id="prime-years-grid"></div>
+                </div>
+            </div>
+            
+            <div class="vis-row">
+                <div class="active-hours">
+                    <div class="vis-title"><i class="fas fa-sun icon-vis"></i> <span data-i18n="activeHours">Active Hours (6 AM - 9 PM)</span> <span class="vis-ratio">(22/30)</span></div>
+                    <div class="active-hours-grid" id="active-hours-grid"></div>
+                </div>
+            </div>
+            
+            <div class="vis-row">
+                <div class="months-remaining">
+                    <div class="vis-title"><i class="far fa-calendar icon-vis"></i> <span data-i18n="monthsRemainingThisYear">Months Remaining This Year</span> <span class="vis-ratio">(8/12)</span></div>
+                    <div class="months-grid" id="months-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生命进度区域 -->
+        <h2 class="progress-title"><i class="fas fa-chart-line icon-title"></i> <span data-i18n="lifeProgress">Life Progress</span></h2>
+        
+        <div class="life-progress-section">
+            <div class="progress-item">
+                <div class="progress-label"><i class="fas fa-hourglass-half icon-progress"></i> <span data-i18n="overallLifeProgressYears">Overall Life Progress (Years)</span></div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="life-progress-years"></div>
+                    <div class="progress-percentage">31%</div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label"><i class="fas fa-star icon-progress"></i> <span data-i18n="primeYearsProgress">Prime Years Progress (Months)</span></div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="prime-years-progress"></div>
+                    <div class="progress-percentage">56%</div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label"><i class="fas fa-calendar-alt icon-progress"></i> <span data-i18n="overallLifeProgressMonths">Overall Life Progress (Months)</span></div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="life-progress-months"></div>
+                    <div class="progress-percentage">32%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生日设置弹窗 -->
+        <div id="birthday-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 data-i18n="setBirthDate">设置出生日期</h2>
+                <div class="birthday-input">
+                    <label for="birth-date" data-i18n="birthDate">出生日期:</label>
+                    <input type="date" id="birth-date">
+                </div>
+                <div class="birthday-input">
+                    <label for="expected-lifespan" data-i18n="expectedLifespan">预期寿命 (年):</label>
+                    <input type="number" id="expected-lifespan" min="1" max="120" value="80">
+                </div>
+                <button id="save-birthday-btn" data-i18n="save">保存</button>
+            </div>
+        </div>
+    </div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生命网格 - 直观规划你的时间</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background: #f8fbfa;
+      font-family: 'Noto Sans SC', 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 16px 0 16px;
+    }
+    .site-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .site-header h1 {
+      font-size: 2.4rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #2196f3;
+    }
+    .site-header .description {
+      color: #666;
+      font-size: 1.1rem;
+      margin-top: 12px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .info-cards {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+      padding: 22px 28px;
+      min-width: 250px;
+      flex: 1 1 200px;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 1rem;
+    }
+    .card .status {
+      color: #2196f3;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .change-btn {
+      background: none;
+      color: #2196f3;
+      border: 1px solid #2196f3;
+      border-radius: 6px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background .2s;
+    }
+    .change-btn:hover { background: #f0f7fa; }
+    .current-year, .your-age, .slot-title, .current-date, .current-time {
+      margin-bottom: 6px;
+    }
+    .slot-time {
+      color: #2196f3;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    .slots-passed {
+      color: #666;
+      font-size: 0.97rem;
+    }
+    .remaining-sections {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .remaining-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+      padding: 18px 18px 12px 18px;
+      min-width: 270px;
+      flex: 1 1 220px;
+      max-width: 340px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 1.03rem;
+      font-weight: 500;
+      color: #2196f3;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .time-units {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    .time-unit {
+      text-align: center;
+      flex: 1;
+    }
+    .unit-label {
+      color: #888;
+      font-size: 0.98rem;
+      margin-bottom: 3px;
+    }
+    .unit-value {
+      font-size: 1.2rem;
+      color: #2196f3;
+      font-weight: bold;
+    }
+    .visualization-area {
+      margin-bottom: 32px;
+    }
+    .vis-row {
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+    .vis-title {
+      font-size: 0.98rem;
+      color: #555;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .vis-ratio { color: #888; font-size: 0.95em; }
+    .weeks-grid, .months-grid, .hours-grid, .prime-years-grid, .active-hours-grid {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+    .grid-cell {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      transition: background .2s;
+    }
+    .cell-past { background: #2196f3; }
+    .cell-current { background: #ff9800; }
+    .cell-future { background: #e0e0e0; }
+    .cell-active { background: #43a047; }
+    .progress-title {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 36px 0 18px 0;
+      color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .life-progress-section {
+      margin-bottom: 40px;
+    }
+    .progress-item {
+      margin-bottom: 24px;
+    }
+    .progress-label {
+      font-size: 1.02rem;
+      color: #555;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 18px;
+      background: #f5f5f5;
+      border-radius: 9px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar .grid-cell {
+      width: 12px;
+      height: 12px;
+      margin: 0 1px;
+      border-radius: 2px;
+    }
+    .progress-percentage {
+      width: 48px;
+      text-align: right;
+      color: #888;
+      font-weight: 500;
+      font-size: 1.01rem;
+    }
+    /* Footer 样式 */
+    .site-footer {
+      background: #222;
+      color: #eee;
+      padding: 38px 0 16px 0;
+      font-size: 15px;
+      margin-top: 50px;
+    }
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 0 18px;
+    }
+    .footer-section {
+      flex: 1;
+      min-width: 200px;
+      margin-bottom: 18px;
+    }
+    .footer-section h3 {
+      color: #4fc3f7;
+      font-size: 17px;
+      margin-bottom: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+    .footer-section ul li a {
+      color: #b3e5fc;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-section ul li a:hover {
+      color: #4fc3f7;
+      text-decoration: underline;
+    }
+    .social-links li a {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 18px 0;
+      border-top: 1px solid #444;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .footer-bottom a {
+      color: #4fc3f7;
+      text-decoration: none;
+    }
+    .footer-bottom a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .info-cards, .remaining-sections, .vis-row, .footer-container {
+        flex-direction: column;
+        gap: 18px;
+      }
+      .card, .remaining-section, .footer-section {
+        max-width: 100%;
+        min-width: 0;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+   </div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3><i class="fas fa-info-circle"></i> 关于本站</h3>
+        <p>生命网格是一款极简主义的网页应用，帮助你直观地规划你的时间。</p>
+      </div>
+      <div class="footer-section">
+        <h3><i class="fas fa-link"></i> 相关链接</h3>
+        <ul>
+          <li><a href="https://github.com/teloei" target="_blank"><i class="fab fa-github"></i> GitHub 项目</a></li>
+          <li><a href="https://www.teloei.top" target="_blank"><i class="fas fa-blog"></i> 博客</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3><i class="fas fa-envelope"></i> 联系</h3>
+        <ul>
+          <li><a href="mailto:contact@teloei.top"><i class="fas fa-envelope"></i> contact@teloei.top</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; <span id="current-year"></span> 生命网格 | 版权所有</div>
+      <div>Powered by <a href="https://github.com/teloei" target="_blank">teloei</a></div>
+    </div>
+  </footer>
+  <script>
+    // 设置当前年份
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
+
+    <script src="main.js"></script>
+</body>
+</html>
